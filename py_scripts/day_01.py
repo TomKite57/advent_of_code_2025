@@ -50,10 +50,12 @@ def dial_position_generator(
 
 if __name__ == "__main__":
   data = common.read_and_parse_file(_DATA_FILE_NAME, line_parse_fn)
+  part_1_sol = part_2_sol = 0
 
-  dial_positions_and_clicks = list(dial_position_generator(data))
-  part_1_sol = sum(pos==0 for pos, _ in dial_positions_and_clicks)
-  part_2_sol = part_1_sol + sum(hidden for _, hidden in dial_positions_and_clicks)
+  for pos, hidden_zeros in dial_position_generator(data):
+    part_1_sol += pos==0
+    part_2_sol += hidden_zeros
+  part_2_sol += part_1_sol
 
   common.pretty_format_and_maybe_check(
     answer=part_1_sol,
