@@ -1,8 +1,8 @@
 
-from typing import Callable, Any, Final, Sequence
+from typing import Callable, Any, Final, Sequence, TypeVar
 
 _IDENTITY: Final = lambda x: x
-
+_T = TypeVar('_T')
 
 def read_and_parse_file(
     file_name: str,
@@ -36,9 +36,9 @@ def read_and_parse_multicolumn_file(
 
 
 def pretty_format_and_maybe_check(
-    answer: str,
+    answer: _T,
     part: int,
-    expectation: str | None = None
+    expectation: _T | None = None
 ):
     print(f"🎄 Part {part} 🎄")
     print(f"{answer}")
