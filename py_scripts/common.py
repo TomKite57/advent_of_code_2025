@@ -10,6 +10,8 @@ def read_and_parse_file(
 ):
   with open(file_name, 'r') as open_file:
     data = [parse_fn(line.strip()) for line in open_file]
+  if len(data) == 1:
+     return data[0]
   return data
 
 
