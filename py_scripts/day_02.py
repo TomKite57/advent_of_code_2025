@@ -37,7 +37,7 @@ def is_number_repeating_pattern(num: int) -> bool:
 def count_matching_numbers_in_range(
     start: int,
     end: int,
-    match_function: Callable[[int], bool]
+    match_function: Callable[[int], bool],
 ):
   count = 0
   for num in range(start, end+1):
@@ -47,11 +47,14 @@ def count_matching_numbers_in_range(
 
 
 if __name__ == "__main__":
+  timer = common.AdventOfCodeTimer()
   data = common.read_and_parse_file(_DATA_FILE_NAME, line_parse_fn)
   part_1_sol = part_2_sol = 0
 
   part_1_sol = sum(count_matching_numbers_in_range(*ran, is_number_doubled) for ran in data)
+  timer.part_1_checkpoint()
   part_2_sol = sum(count_matching_numbers_in_range(*ran, is_number_repeating_pattern) for ran in data)
+  timer.part_2_checkpoint()
 
   common.pretty_format_and_maybe_check(
     answer=part_1_sol,
@@ -64,3 +67,5 @@ if __name__ == "__main__":
     part=2,
     expectation=31755323497
   )
+
+  timer.show_times()

@@ -49,13 +49,16 @@ def dial_position_generator(
 
 
 if __name__ == "__main__":
+  timer = common.AdventOfCodeTimer()
   data = common.read_and_parse_file(_DATA_FILE_NAME, line_parse_fn)
   part_1_sol = part_2_sol = 0
 
   for pos, hidden_zeros in dial_position_generator(data):
     part_1_sol += pos==0
     part_2_sol += hidden_zeros
+  timer.part_1_checkpoint()
   part_2_sol += part_1_sol
+  timer.part_2_checkpoint()
 
   common.pretty_format_and_maybe_check(
     answer=part_1_sol,
@@ -68,3 +71,5 @@ if __name__ == "__main__":
     part=2,
     expectation=5657
   )
+
+  timer.show_times()

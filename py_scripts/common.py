@@ -1,8 +1,11 @@
 
-from typing import Callable, Any, Final, Sequence, TypeVar
+from typing import Callable, Any, Final, Sequence, TypeVar, Iterable
+import time
+from collections import defaultdict
 
 _IDENTITY: Final = lambda x: x
 _T = TypeVar('_T')
+
 
 def read_and_parse_file(
     file_name: str,
@@ -35,6 +38,59 @@ def read_and_parse_multicolumn_file(
             ]
 
   return read_and_parse_file(file_name, parse_fn)
+
+
+def read_and_parse_grid_to_dict(
+    file_name: str,
+    *,
+    default_return: str | None = None,
+) -> dict[complex, str]:
+  if default_return is not None:
+    map_content_by_coord = defaultdict(lambda: default_return)
+  else:
+    map_content_by_coord = dict()
+  with open(file_name, 'r') as open_file:
+    for row, line in enumerate(open_file):
+        for col, char in enumerate(line):
+          pos = col + row*1.j
+          map_content_by_coord[pos] = char
+  return map_content_by_coord
+
+
+def get_complex_directions(
+    *,
+    include_diagonals=False
+) -> Iterable[complex]:
+   yield from (1, 1.j, -1, -1.j)
+   if include_diagonals:
+      yield from (1+1.j, 1-1.j, -1+1.j, -1-1.j)
+
+
+class AdventOfCodeTimer:
+  def __init__(self):
+    self.start_time = time.perf_counter()
+    self.part_1_time = None
+    self.part_2_time = None
+
+  def part_1_checkpoint(self):
+    if self.part_1_time is not None:
+      raise ValueError("Part 1 time already set. Did you mean part_2_checkpoint?")
+    self.part_1_time = time.perf_counter()
+
+  def part_2_checkpoint(self):
+    if self.part_2_time is not None:
+      raise ValueError("Part 2 time already set. Did you mean part_1_checkpoint?")
+    self.part_2_time = time.perf_counter()
+
+  def show_times(self):
+    if self.part_1_time:
+      part_1_delta = self.part_1_time - self.start_time
+      print(f"Part 1 took {part_1_delta:.3f} s")
+      if self.part_2_time:
+        part_2_delta = self.part_2_time - self.part_1_time
+        print(f"Part 2 took {part_2_delta:.3f} s")
+
+
 
 
 def pretty_format_and_maybe_check(

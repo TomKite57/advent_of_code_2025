@@ -30,11 +30,14 @@ def get_largest_pairing(line: list[int]) -> int:
 
 
 if __name__ == "__main__":
+  timer = common.AdventOfCodeTimer()
   data = common.read_and_parse_file(_DATA_FILE_NAME, line_parse_fn)
   part_1_sol = part_2_sol = 0
 
   part_1_sol = sum(get_largest_pairing(line) for line in data)
+  timer.part_1_checkpoint()
   part_2_sol = sum(get_largest_combination(line, 12) for line in data)
+  timer.part_2_checkpoint()
 
   common.pretty_format_and_maybe_check(
     answer=part_1_sol,
@@ -48,6 +51,7 @@ if __name__ == "__main__":
     expectation=168617068915447
   )
 
+  timer.show_times()
 
 
 """
