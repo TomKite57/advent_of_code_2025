@@ -88,28 +88,17 @@ def count_all_in_range(
 
 
 if __name__ == "__main__":
-  timer = common.AdventOfCodeTimer()
+  aoc_manager = common.AdventOfCodeManager()
+
   ranges, ingredients = read_and_parse_file(_DATA_FILE_NAME)
   ranges = sorted(ranges, key=lambda x: x[0])
   merged_ranges = iteratively_merge_all_ranges(ranges)
   part_1_sol = part_2_sol = 0
 
   part_1_sol = sum(is_number_in_any_range(num, merged_ranges) for num in ingredients)
-  timer.part_1_checkpoint()
+  aoc_manager.submit_part_1(part_1_sol, expectation=896)
 
   part_2_sol = count_all_in_range(merged_ranges)
-  timer.part_2_checkpoint()
+  aoc_manager.submit_part_2(part_2_sol, expectation=346240317247002)
 
-  common.pretty_format_and_maybe_check(
-    answer=part_1_sol,
-    part=1,
-    expectation=896
-  )
-
-  common.pretty_format_and_maybe_check(
-    answer=part_2_sol,
-    part=2,
-    expectation=346240317247002
-  )
-
-  timer.show_times()
+  aoc_manager.show()

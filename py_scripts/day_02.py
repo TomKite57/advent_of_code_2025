@@ -47,25 +47,13 @@ def count_matching_numbers_in_range(
 
 
 if __name__ == "__main__":
-  timer = common.AdventOfCodeTimer()
+  aoc_manager = common.AdventOfCodeManager()
   data = common.read_and_parse_file(_DATA_FILE_NAME, line_parse_fn)
   part_1_sol = part_2_sol = 0
 
   part_1_sol = sum(count_matching_numbers_in_range(*ran, is_number_doubled) for ran in data)
-  timer.part_1_checkpoint()
+  aoc_manager.submit_part_1(part_1_sol, expectation=23534117921)
   part_2_sol = sum(count_matching_numbers_in_range(*ran, is_number_repeating_pattern) for ran in data)
-  timer.part_2_checkpoint()
+  aoc_manager.submit_part_2(part_2_sol, expectation=31755323497)
 
-  common.pretty_format_and_maybe_check(
-    answer=part_1_sol,
-    part=1,
-    expectation=23534117921
-  )
-
-  common.pretty_format_and_maybe_check(
-    answer=part_2_sol,
-    part=2,
-    expectation=31755323497
-  )
-
-  timer.show_times()
+  aoc_manager.show()

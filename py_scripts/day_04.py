@@ -45,30 +45,18 @@ def remove_accesible_paper(
 
 
 if __name__ == "__main__":
-  timer = common.AdventOfCodeTimer()
+  aoc_manager = common.AdventOfCodeManager()
 
   data = common.read_and_parse_grid_to_dict(_DATA_FILE_NAME)
   part_1_sol = part_2_sol = 0
 
   part_1_sol = sum(is_paper_accessible(data, pos) for pos in data.keys())
-  timer.part_1_checkpoint()
+  aoc_manager.submit_part_1(part_1_sol, expectation=1602)
 
   starting_paper_count = sum(char==_PAPER_TILE for char in data.values())
   data_after_paper_removal = remove_accesible_paper(data)
   ending_paper_count = sum(char==_PAPER_TILE for char in data_after_paper_removal.values())
   part_2_sol = starting_paper_count - ending_paper_count
-  timer.part_2_checkpoint()
+  aoc_manager.submit_part_2(part_2_sol, expectation=9518)
 
-  common.pretty_format_and_maybe_check(
-    answer=part_1_sol,
-    part=1,
-    expectation=1602
-  )
-
-  common.pretty_format_and_maybe_check(
-    answer=part_2_sol,
-    part=2,
-    expectation=9518
-  )
-
-  timer.show_times()
+  aoc_manager.show()

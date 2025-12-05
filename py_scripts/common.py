@@ -66,33 +66,6 @@ def get_complex_directions(
       yield from (1+1.j, 1-1.j, -1+1.j, -1-1.j)
 
 
-class AdventOfCodeTimer:
-  def __init__(self):
-    self.start_time = time.perf_counter()
-    self.part_1_time = None
-    self.part_2_time = None
-
-  def part_1_checkpoint(self):
-    if self.part_1_time is not None:
-      raise ValueError("Part 1 time already set. Did you mean part_2_checkpoint?")
-    self.part_1_time = time.perf_counter()
-
-  def part_2_checkpoint(self):
-    if self.part_2_time is not None:
-      raise ValueError("Part 2 time already set. Did you mean part_1_checkpoint?")
-    self.part_2_time = time.perf_counter()
-
-  def show_times(self):
-    if self.part_1_time:
-      part_1_delta = self.part_1_time - self.start_time
-      print(f"Part 1 took {part_1_delta:.3f} s")
-      if self.part_2_time:
-        part_2_delta = self.part_2_time - self.part_1_time
-        print(f"Part 2 took {part_2_delta:.3f} s")
-
-
-
-
 def pretty_format_and_maybe_check(
     answer: _T,
     part: int,
@@ -106,6 +79,55 @@ def pretty_format_and_maybe_check(
         else:
             print("💀 Wrong! Santa's weeping and the elves are on strike 💀")
     print()
+
+
+class AdventOfCodeManager:
+  def __init__(self):
+    self.start_time = time.perf_counter()
+    self.part_1_solution = None
+    self.part_2_solution = None
+
+  def submit_part_1(
+      self,
+      solution: _T,
+      expectation: _T | None = None
+  ):
+    if self.part_1_solution is not None:
+      raise ValueError("Part 1 time already set. Did you mean part_2_checkpoint?")
+    self.part_1_solution = (solution, expectation, time.perf_counter())
+
+  def submit_part_2(
+      self,
+      solution: _T,
+      expectation: _T | None = None
+  ):
+    if self.part_2_solution is not None:
+      raise ValueError("Part 2 time already set. Did you mean part_1_checkpoint?")
+    if self.part_1_solution is None:
+      raise ValueError("Part 1 not set. Did you mean part_1_checkpoint?")
+    self.part_2_solution = (solution, expectation, time.perf_counter())
+
+
+  def show(self):
+    if self.part_1_solution is not None:
+      pretty_format_and_maybe_check(
+        self.part_1_solution[0],
+        1,
+        self.part_1_solution[1]
+      )
+    if self.part_2_solution is not None:
+      pretty_format_and_maybe_check(
+        self.part_2_solution[0],
+        2,
+        self.part_2_solution[1]
+      )
+
+    if self.part_1_solution is not None:
+      part_1_delta = self.part_1_solution[2] - self.start_time
+      print(f"Part 1 took {part_1_delta:.3f} s")
+    if self.part_2_solution is not None:
+      part_2_delta = self.part_2_solution[2] - self.part_1_solution[2]
+      print(f"Part 2 took {part_2_delta:.3f} s")
 
 
 if __name__ == "__main__":
