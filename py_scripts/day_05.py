@@ -12,8 +12,7 @@ Range = NewType("Range", tuple[int, int])
 def read_and_parse_file(
     file_name: str
 ) -> tuple[list[Range], list[int]]:
-  with open(file_name, 'r') as open_file:
-    raw_lines = open_file.read()
+  raw_lines = common.read_raw_file(file_name)
   ranges, ingredients = raw_lines.split('\n\n')
   ranges = [line for line in ranges.split('\n') if line]
   ingredients = [line for line in ingredients.split('\n') if line]

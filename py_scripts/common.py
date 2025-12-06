@@ -7,6 +7,13 @@ _IDENTITY: Final = lambda x: x
 _T = TypeVar('_T')
 
 
+def read_raw_file(
+    file_name: str
+) -> str:
+  with open(file_name, 'r') as open_file:
+    return open_file.read()
+
+
 def read_and_parse_file(
     file_name: str,
     parse_fn: Callable[[str], Any] = lambda x: x
@@ -21,7 +28,7 @@ def read_and_parse_file(
 def read_and_parse_multicolumn_file(
     file_name: str,
     parse_fns: Sequence[Callable[[str], Any] | None] = [lambda x: x],
-    separator: str = '\t',
+    separator: str | None = None,
     exclude_empty: bool = True
 ):
   for idx, fn in enumerate(parse_fns):
