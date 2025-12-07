@@ -2,9 +2,14 @@
 from typing import Callable, Any, Final, Sequence, TypeVar, Iterable
 import time
 from collections import defaultdict
+import bisect
 
 _IDENTITY: Final = lambda x: x
 _T = TypeVar('_T')
+COMPLEX_DOWN = (-1j)
+COMPLEX_UP = (1j)
+COMPLEX_LEFT = (-1+0j)
+COMPLEX_RIGHT = (1+0j)
 
 
 def read_raw_file(
@@ -58,8 +63,9 @@ def read_and_parse_grid_to_dict(
     map_content_by_coord = dict()
   with open(file_name, 'r') as open_file:
     for row, line in enumerate(open_file):
+        line = line.strip()
         for col, char in enumerate(line):
-          pos = col + row*1.j
+          pos = col - row*1j
           map_content_by_coord[pos] = char
   return map_content_by_coord
 
@@ -68,9 +74,9 @@ def get_complex_directions(
     *,
     include_diagonals=False
 ) -> Iterable[complex]:
-   yield from (1, 1.j, -1, -1.j)
+   yield from (1, 1j, -1, -1j)
    if include_diagonals:
-      yield from (1+1.j, 1-1.j, -1+1.j, -1-1.j)
+      yield from (1+1j, 1-1j, -1+1j, -1-1j)
 
 
 def pretty_format_and_maybe_check(
@@ -135,6 +141,66 @@ class AdventOfCodeManager:
     if self.part_2_solution is not None:
       part_2_delta = self.part_2_solution[2] - self.part_1_solution[2]
       print(f"Part 2 took {part_2_delta:.3f} s")
+
+
+def get_grid_extent(
+    tile_map: dict[complex, Any]
+) -> tuple[int, int, int, int]:
+  all_keys = list(tile_map.keys())
+  return (
+    min(int(x.real) for x in all_keys),
+    max(int(x.real) for x in all_keys),
+    min(int(x.imag) for x in all_keys),
+    max(int(x.imag) for x in all_keys),
+  )
+
+
+def print_complex_grid(
+    tile_map: dict[complex, Any]
+):
+  grid_extent = get_grid_extent(tile_map)
+  max_element_extent = max(len(str(elem)) for elem in tile_map.values())
+  padding = int(max_element_extent > 1)
+  for y in range(grid_extent[3], grid_extent[2]-1, -1):
+    for x in range(grid_extent[0], grid_extent[1]+1):
+      string = str(tile_map[x+y*1j])
+      string = ''.join((string, ' '*(max_element_extent-len(string)+padding)))
+      print(string, end='')
+    print()
+
+
+class SortedLookupList:
+  def __init__(
+      self,
+      elements: Sequence[_T],
+      sort_key: Callable[[_T], int] | None = None,
+      allow_duplicates: bool = False
+  ):
+    self._list = list(elements)
+    self._counts = defaultdict(lambda: 0)
+    for elem in self._list:
+      self._counts[elem] += 1
+
+    self._sort_key = sort_key
+    self._allow_duplicates = allow_duplicates
+    self._sort()
+
+  def _sort(self):
+    self._list = sorted(self._list, key=self._sort_key)
+
+  def add(self, element: _T):
+    if not self._allow_duplicates and element in self._counts:
+      raise ValueError(f"Element {element} already in container")
+    bisect.insort(self._list, element, key=self._sort_key)
+    self._counts[element] += 1
+
+  def pop(self, index: int = -1):
+    element = self._list.pop(index)
+    self._counts[element] -= 1
+    return element
+
+  def __contains__(self, element: _T):
+    return element in self._counts
 
 
 if __name__ == "__main__":
