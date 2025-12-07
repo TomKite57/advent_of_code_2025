@@ -189,7 +189,7 @@ class SortedLookupList:
     self._list = sorted(self._list, key=self._sort_key)
 
   def add(self, element: _T):
-    if not self._allow_duplicates and element in self._counts:
+    if not self._allow_duplicates and self._counts[element] > 1:
       raise ValueError(f"Element {element} already in container")
     bisect.insort(self._list, element, key=self._sort_key)
     self._counts[element] += 1
